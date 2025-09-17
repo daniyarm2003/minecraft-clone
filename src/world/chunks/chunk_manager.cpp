@@ -77,10 +77,10 @@ namespace World::Chunks {
                     int curChunkIndex = this->getChunkVectorIndex(xOff, zOff, this->curRenderDistance);
                     int offsetChunkIndex = this->getChunkVectorIndex(xOff + deltaX, zOff, this->curRenderDistance);
 
-                    if(xOff >= this->curRenderDistance + deltaX) {
+                    if(xOff >= -this->curRenderDistance - deltaX) {
                         this->loadedChunks[curChunkIndex] = this->loadedChunks[offsetChunkIndex];
 
-                        if(xOff == this->curRenderDistance + deltaX) {
+                        if(xOff == -this->curRenderDistance - deltaX) {
                             this->loadedChunks[curChunkIndex]->meshMarkDirty();
                         }
                     }
@@ -116,10 +116,10 @@ namespace World::Chunks {
                     int curChunkIndex = this->getChunkVectorIndex(xOff, zOff, this->curRenderDistance);
                     int offsetChunkIndex = this->getChunkVectorIndex(xOff, zOff + deltaZ, this->curRenderDistance);
 
-                    if(zOff >= this->curRenderDistance + deltaZ) {
+                    if(zOff >= -this->curRenderDistance - deltaZ) {
                         this->loadedChunks[curChunkIndex] = this->loadedChunks[offsetChunkIndex];
 
-                        if(zOff == this->curRenderDistance + deltaZ) {
+                        if(zOff == -this->curRenderDistance - deltaZ) {
                             this->loadedChunks[curChunkIndex]->meshMarkDirty();
                         }
                     }
