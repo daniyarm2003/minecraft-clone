@@ -21,7 +21,7 @@ class Game {
 public:
     static constexpr int DEFAULT_SCREEN_WIDTH = 800;
     static constexpr int DEFAULT_SCREEN_HEIGHT = 600;
-    static constexpr const char* DEFAULT_WINDOW_TITLE = "Placeholder Title";
+    static constexpr const char* DEFAULT_WINDOW_TITLE = "OpenGL Minecraft Clone";
 
     Game();
 

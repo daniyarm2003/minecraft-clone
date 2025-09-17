@@ -154,6 +154,72 @@ namespace World::Chunks {
         return std::weak_ptr<Chunk>(this->loadedChunks[chunkIndex]);
     }
 
+    bool ChunkManager::isBlockPosLoaded(const glm::ivec3& blockPos) const {
+        return this->isBlockPosLoaded(blockPos.x, blockPos.y, blockPos.z);
+    }
+
+    bool ChunkManager::isBlockPosLoaded(int x, int y, int z) const {
+        bool negativeChunkOffsetX = x < 0 && x % Chunk::CHUNK_SIZE_X != 0;
+        bool negativeChunkOffsetZ = z < 0 && z % Chunk::CHUNK_SIZE_Z != 0;
+
+        int chunkX = x / Chunk::CHUNK_SIZE_X - (negativeChunkOffsetX ? 1 : 0);
+        int chunkZ = z / Chunk::CHUNK_SIZE_Z - (negativeChunkOffsetZ ? 1 : 0);
+
+        return this->isChunkLoaded(chunkX, chunkZ) && y >= 0 && y < Chunk::CHUNK_SIZE_Y;
+    }
+
+    const Block& ChunkManager::getBlock(const glm::ivec3& blockPos) const {
+        return this->getBlock(blockPos.x, blockPos.y, blockPos.z);
+    }
+
+    const Block& ChunkManager::getBlock(int x, int y, int z) const {
+        if(!this->isBlockPosLoaded(x, y, z)) {
+            return Blocks::AIR;
+        }
+
+        bool negativeChunkOffsetX = x < 0 && x % Chunk::CHUNK_SIZE_X != 0;
+        bool negativeChunkOffsetZ = z < 0 && z % Chunk::CHUNK_SIZE_Z != 0;
+
+        int chunkX = x / Chunk::CHUNK_SIZE_X - (negativeChunkOffsetX ? 1 : 0);
+        int chunkZ = z / Chunk::CHUNK_SIZE_Z - (negativeChunkOffsetZ ? 1 : 0);
+
+        int blockX = x - Chunk::CHUNK_SIZE_X * chunkX;
+        int blockZ = z - Chunk::CHUNK_SIZE_Z * chunkZ;
+
+        int deltaX = chunkX - this->centerChunkX;
+        int deltaZ = chunkZ - this->centerChunkZ;
+
+        int chunkIndex = this->getChunkVectorIndex(deltaX, deltaZ, this->curRenderDistance);
+
+        return this->loadedChunks[chunkIndex]->getBlock(blockX, y, blockZ);
+    }
+
+    void ChunkManager::setBlock(const glm::ivec3& blockPos, const Block& block) {
+        this->setBlock(blockPos.x, blockPos.y, blockPos.z, block);
+    }
+
+    void ChunkManager::setBlock(int x, int y, int z, const Block& block) {
+        if(!this->isBlockPosLoaded(x, y, z)) {
+            return;
+        }
+
+        bool negativeChunkOffsetX = x < 0 && x % Chunk::CHUNK_SIZE_X != 0;
+        bool negativeChunkOffsetZ = z < 0 && z % Chunk::CHUNK_SIZE_Z != 0;
+
+        int chunkX = x / Chunk::CHUNK_SIZE_X - (negativeChunkOffsetX ? 1 : 0);
+        int chunkZ = z / Chunk::CHUNK_SIZE_Z - (negativeChunkOffsetZ ? 1 : 0);
+
+        int blockX = (x - Chunk::CHUNK_SIZE_X * chunkX) % Chunk::CHUNK_SIZE_X;
+        int blockZ = (z - Chunk::CHUNK_SIZE_Z * chunkZ) % Chunk::CHUNK_SIZE_Z;
+
+        int deltaX = chunkX - this->centerChunkX;
+        int deltaZ = chunkZ - this->centerChunkZ;
+
+        int chunkIndex = this->getChunkVectorIndex(deltaX, deltaZ, this->curRenderDistance);
+
+        this->loadedChunks[chunkIndex]->setBlock(blockX, y, blockZ, block);
+    }
+
     void ChunkManager::render(GL::GLFWContext& context, GL::ShaderProgram& shader, const BlockAtlas& blockAtlas, const glm::mat4& viewProjMat) {
         shader.use();
 

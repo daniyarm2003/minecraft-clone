@@ -42,6 +42,9 @@ namespace World::Chunks {
     void ChunkMesh::generateMesh(Chunk* chunk, const BlockAtlas& blockAtlas, ChunkManager* chunkManager) {
         this->vertices.clear();
 
+        glm::ivec2 blockTexCoordCache[256][6];
+        bool blockTexCoordCachedBlock[256]{};
+
         for(int x = 0; x < Chunk::CHUNK_SIZE_X; ++x) {
             for(int y = 0; y < Chunk::CHUNK_SIZE_Y; ++y) {
                 for(int z = 0; z < Chunk::CHUNK_SIZE_Z; ++z) {
@@ -61,7 +64,19 @@ namespace World::Chunks {
                         { 0,  1,  0} 
                     };
 
-                    for(const glm::ivec3& axis : axes) {
+                    size_t blockId = (size_t)block.getId();
+
+                    if(!blockTexCoordCachedBlock[blockId]) {
+                        for(size_t i = 0; i < 6; i++) {
+                            const glm::ivec3& axis = axes[i];
+                            blockTexCoordCache[blockId][i] = block.getTextureCoordinates(blockAtlas, axis);
+                        }
+
+                        blockTexCoordCachedBlock[blockId] = true;
+                    }
+
+                    for(size_t i = 0; i < 6; i++) {
+                        const glm::ivec3& axis = axes[i];
                         glm::ivec3 boundedAxis = { glm::max(axis.x, 0), glm::max(axis.y, 0), glm::max(axis.z, 0) };
 
                         glm::ivec3 nextAxis1 = { glm::abs(axis.z), glm::abs(axis.x), glm::abs(axis.y) };
@@ -80,7 +95,7 @@ namespace World::Chunks {
                             firstPoint + nextAxis2
                         };
 
-                        glm::ivec2 blockTexCoords = block.getTextureCoordinates(blockAtlas, axis);
+                        const glm::ivec2& blockTexCoords = blockTexCoordCache[blockId][i];
 
                         glm::ivec3 texCoordXAxis = axis.y == 0 ? glm::ivec3(axis.z, 0, -axis.x) : glm::ivec3(1, 0, 0);
                         glm::ivec3 texCoordYAxis = axis.y == 0 ? glm::ivec3(0, 1, 0) : glm::ivec3(0, 0, -axis.y);

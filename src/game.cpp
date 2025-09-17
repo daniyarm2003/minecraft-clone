@@ -29,7 +29,7 @@ Game::Game()
         this->context.enableFaceCulling();
         this->context.setCullFrontFace(GL_CW);
 
-        this->chunkManager.setRenderDistance(5);
+        this->chunkManager.setRenderDistance(7);
 
         this->camera.setPosition(glm::vec3(0.0f, World::Chunks::Chunk::BLOCK_SIZE_FLOAT * 32.0f, 0.0f));
     }
@@ -109,6 +109,10 @@ void Game::update() {
     this->camera.setRotation(camRot);
 
     this->chunkManager.loadChunks(camPos);
+
+    if(this->inputManager.isKeyPressed(GLFW_KEY_F)) {
+        this->chunkManager.setBlock(glm::ivec3(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT + 3.0f * camForward), World::Chunks::Blocks::STONE);
+    }
 
     this->inputManager.resetMouseDelta();
 }
