@@ -111,7 +111,16 @@ void Game::update() {
     this->chunkManager.loadChunks(camPos);
 
     if(this->inputManager.isKeyPressed(GLFW_KEY_F)) {
-        this->chunkManager.setBlock(glm::ivec3(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT + 3.0f * camForward), World::Chunks::Blocks::STONE);
+        glm::ivec3 camBlockPos = glm::floor(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT + 1.5f * camForward);
+
+        for(int offX = -3; offX <= 3; offX++) {
+            for(int offY = -3; offY <= 3; offY++) {
+                for(int offZ = -3; offZ <= 3; offZ++) {
+                    glm::ivec3 blockOffset = { offX, offY, offZ };
+                    this->chunkManager.setBlock(camBlockPos + blockOffset, World::Chunks::Blocks::AIR);
+                }
+            }
+        }
     }
 
     this->inputManager.resetMouseDelta();

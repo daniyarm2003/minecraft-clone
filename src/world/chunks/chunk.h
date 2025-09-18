@@ -20,7 +20,7 @@ namespace World::Chunks {
         static constexpr int BLOCK_SIZE = 5;
         static constexpr float BLOCK_SIZE_FLOAT = (float)BLOCK_SIZE;
 
-        Chunk(int chunkCoordX, int chunkCoordZ);
+        Chunk(ChunkManager* chunkManager, int chunkCoordX, int chunkCoordZ);
 
         const Block& getBlock(const glm::ivec3& blockPos) const;
         const Block& getBlock(int x, int y, int z) const;
@@ -36,7 +36,7 @@ namespace World::Chunks {
 
         void meshMarkDirty();
 
-        void render(GL::GLFWContext& context, GL::ShaderProgram& shader, const BlockAtlas& blockAtlas, ChunkManager* chunkManager);
+        void render(GL::GLFWContext& context, GL::ShaderProgram& shader, const BlockAtlas& blockAtlas);
 
     private:
         int chunkCoordX, chunkCoordZ;
@@ -45,6 +45,7 @@ namespace World::Chunks {
         std::array<bool, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> solidFlags;
 
         ChunkMesh mesh;
+        ChunkManager* chunkManager;
     };
 }
 

@@ -233,7 +233,7 @@ namespace World::Chunks {
                 continue;
             }
 
-            chunkPtr->render(context, shader, blockAtlas, this);
+            chunkPtr->render(context, shader, blockAtlas);
         }
 
         blockAtlas.unbindTexture();
@@ -249,7 +249,7 @@ namespace World::Chunks {
     }
 
     std::shared_ptr<Chunk> ChunkManager::createAndPopulateChunk(int chunkX, int chunkZ) {
-        auto chunkPtr = std::make_shared<Chunk>(chunkX, chunkZ);
+        auto chunkPtr = std::make_shared<Chunk>(this, chunkX, chunkZ);
 
         for(int i = 0; i < 16; i++) {
             for(int j = 0; j < 16; j++) {
