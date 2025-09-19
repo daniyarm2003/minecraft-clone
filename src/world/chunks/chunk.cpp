@@ -7,7 +7,6 @@ namespace World::Chunks {
     Chunk::Chunk(ChunkManager* chunkManager, int chunkCoordX, int chunkCoordZ) : chunkCoordX(chunkCoordX), chunkCoordZ(chunkCoordZ), chunkManager(chunkManager) {
         for(size_t i = 0; i < this->blocks.size(); i++) {
             this->blocks[i] = Blocks::AIR;
-            this->solidFlags[i] = false;
         }
     }
 
@@ -42,7 +41,6 @@ namespace World::Chunks {
         int blockIndex = x + y * CHUNK_SIZE_X + z * CHUNK_SIZE_X * CHUNK_SIZE_Y;
 
         this->blocks[blockIndex] = block;
-        this->solidFlags[blockIndex] = block.isSolid();
 
         this->mesh.markDirty();
 
@@ -59,18 +57,6 @@ namespace World::Chunks {
         else if(z == CHUNK_SIZE_Z - 1 && this->chunkManager->isChunkLoaded(this->chunkCoordX, this->chunkCoordZ + 1)) {
             this->chunkManager->getChunk(this->chunkCoordX, this->chunkCoordZ + 1).lock()->meshMarkDirty();
         }
-    }
-
-    bool Chunk::isBlockSolid(const glm::ivec3& blockPos) const {
-        return this->isBlockSolid(blockPos.x, blockPos.y, blockPos.z);
-    }
-
-    bool Chunk::isBlockSolid(int x, int y, int z) const {
-        if (x < 0 || x >= CHUNK_SIZE_X || y < 0 || y >= CHUNK_SIZE_Y || z < 0 || z >= CHUNK_SIZE_Z) {
-            return false;
-        }
-
-        return this->solidFlags[x + y * CHUNK_SIZE_X + z * CHUNK_SIZE_X * CHUNK_SIZE_Y];
     }
 
     int Chunk::getChunkCoordX() const {

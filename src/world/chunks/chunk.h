@@ -28,9 +28,6 @@ namespace World::Chunks {
         void setBlock(const glm::ivec3& blockPos, const Block& block);
         void setBlock(int x, int y, int z, const Block& block);
 
-        bool isBlockSolid(const glm::ivec3& blockPos) const;
-        bool isBlockSolid(int x, int y, int z) const;
-
         int getChunkCoordX() const;
         int getChunkCoordZ() const;
 
@@ -42,7 +39,6 @@ namespace World::Chunks {
         int chunkCoordX, chunkCoordZ;
 
         std::array<Block, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> blocks;
-        std::array<bool, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> solidFlags;
 
         ChunkMesh mesh;
         ChunkManager* chunkManager;

@@ -154,7 +154,7 @@ namespace World::Chunks {
 
                                 auto neighbourChunkPtr = chunkManager->getChunk(neighbourChunkX, neighbourChunkZ);
 
-                                if(!neighbourChunkPtr.lock()->isBlockSolid(axisOffsetBlockPosition)) {
+                                if(!neighbourChunkPtr.lock()->getBlock(axisOffsetBlockPosition).isSolid()) {
                                     for(const size_t& index : indeces) {
                                         const glm::ivec3& point = points[index];
                                         const glm::ivec2& texCoord = texCoords[index];
@@ -167,7 +167,7 @@ namespace World::Chunks {
                                 }
                             }
                         }
-                        else if(!chunk->isBlockSolid(axisOffsetBlockPosition)) {
+                        else if(!chunk->getBlock(axisOffsetBlockPosition).isSolid()) {
                             for(const size_t& index : indeces) {
                                 const glm::ivec3& point = points[index];
                                 const glm::ivec2& texCoord = texCoords[index];

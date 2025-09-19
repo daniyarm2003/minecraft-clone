@@ -259,7 +259,19 @@ namespace World::Chunks {
                 float h = 16.0f + 8.0f * stb_perlin_noise3(noiseX, 0.0f, noiseZ, 0, 0, 0);
 
                 for(int k = 0; k <= (int)h; k++) {
-                    chunkPtr->setBlock(i, k, j, k == (int)h ? Blocks::GRASS : k > h / 2.0f ? Blocks::DIRT : Blocks::STONE);
+                    const Block* block = &Blocks::AIR;
+
+                    if(k <= h / 2) {
+                        block = &Blocks::STONE;
+                    }
+                    else if(k == (int)h) {
+                        block = &Blocks::GRASS;
+                    }
+                    else {
+                        block = &Blocks::DIRT;
+                    }
+
+                    chunkPtr->setBlock(i, k, j, *block);
                 }
             }
         }
