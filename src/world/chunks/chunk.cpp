@@ -3,6 +3,8 @@
 #include "blocks.h"
 #include "chunk_manager.h"
 
+#include <iostream>
+
 namespace World::Chunks {
     Chunk::Chunk(ChunkManager* chunkManager, int chunkCoordX, int chunkCoordZ) : chunkCoordX(chunkCoordX), chunkCoordZ(chunkCoordZ), chunkManager(chunkManager) {
         for(size_t i = 0; i < this->blocks.size(); i++) {
@@ -29,11 +31,11 @@ namespace World::Chunks {
         return this->blocks[x + y * CHUNK_SIZE_X + z * CHUNK_SIZE_X * CHUNK_SIZE_Y];
     }
 
-    void Chunk::setBlock(const glm::ivec3& blockPos, const Block& block) {
-        this->setBlock(blockPos.x, blockPos.y, blockPos.z, block);
+    void Chunk::setBlock(const glm::ivec3& blockPos, const Block& block, bool naturalGeneration) {
+        this->setBlock(blockPos.x, blockPos.y, blockPos.z, block, naturalGeneration);
     }
 
-    void Chunk::setBlock(int x, int y, int z, const Block& block) {
+    void Chunk::setBlock(int x, int y, int z, const Block& block, bool naturalGeneration) {
         if (x < 0 || x >= CHUNK_SIZE_X || y < 0 || y >= CHUNK_SIZE_Y || z < 0 || z >= CHUNK_SIZE_Z) {
             return;
         }
@@ -41,6 +43,10 @@ namespace World::Chunks {
         int blockIndex = x + y * CHUNK_SIZE_X + z * CHUNK_SIZE_X * CHUNK_SIZE_Y;
 
         this->blocks[blockIndex] = block;
+
+        if(!naturalGeneration) {
+            this->modifiedBlockCoords.insert(blockIndex);
+        }
 
         this->mesh.markDirty();
 
@@ -69,5 +75,22 @@ namespace World::Chunks {
 
     void Chunk::meshMarkDirty() {
         this->mesh.markDirty();
+    }
+
+    std::vector<ChunkModification> Chunk::getChunkModifications() const {
+        std::vector<ChunkModification> chunkMods(this->modifiedBlockCoords.size());
+
+        for(const int& modifiedBlockCoord : this->modifiedBlockCoords) {
+            int xCoord = modifiedBlockCoord % CHUNK_SIZE_X;
+            int yCoord = (modifiedBlockCoord % (CHUNK_SIZE_X * CHUNK_SIZE_Y)) / CHUNK_SIZE_X;
+            int zCoord = modifiedBlockCoord / (CHUNK_SIZE_X * CHUNK_SIZE_Y);
+
+            glm::ivec3 blockPos = { xCoord, yCoord, zCoord };
+            const Block block = this->getBlock(blockPos);
+
+            chunkMods.push_back({ blockPos, block });
+        }
+
+        return chunkMods;
     }
 }

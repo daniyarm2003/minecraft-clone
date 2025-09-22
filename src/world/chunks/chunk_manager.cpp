@@ -58,6 +58,18 @@ namespace World::Chunks {
                     int curChunkIndex = this->getChunkVectorIndex(xOff, zOff, this->curRenderDistance);
                     int offsetChunkIndex = this->getChunkVectorIndex(xOff + deltaX, zOff, this->curRenderDistance);
 
+                    if(xOff < -this->curRenderDistance + deltaX) {
+                        const auto& chunk = this->loadedChunks[curChunkIndex];
+                        const auto chunkMods = chunk->getChunkModifications();
+
+                        if(!chunkMods.empty()) {
+                            uint64_t chunkXBits = (uint64_t)chunk->getChunkCoordX() & 0xFFFFFFFF;
+                            uint64_t chunkZBits = ((uint64_t)chunk->getChunkCoordZ() & 0xFFFFFFFF) << 32;
+
+                            this->savedChunkModifications.emplace(chunkXBits | chunkZBits, chunkMods);;
+                        }
+                    }
+
                     if(xOff <= this->curRenderDistance - deltaX) {
                         this->loadedChunks[curChunkIndex] = this->loadedChunks[offsetChunkIndex];
 
@@ -76,6 +88,18 @@ namespace World::Chunks {
                 for(int zOff = -this->curRenderDistance; zOff <= this->curRenderDistance; zOff++) {
                     int curChunkIndex = this->getChunkVectorIndex(xOff, zOff, this->curRenderDistance);
                     int offsetChunkIndex = this->getChunkVectorIndex(xOff + deltaX, zOff, this->curRenderDistance);
+
+                    if(xOff > this->curRenderDistance + deltaX) {
+                        const auto& chunk = this->loadedChunks[curChunkIndex];
+                        const auto chunkMods = chunk->getChunkModifications();
+
+                        if(!chunkMods.empty()) {
+                            uint64_t chunkXBits = (uint64_t)chunk->getChunkCoordX() & 0xFFFFFFFF;
+                            uint64_t chunkZBits = ((uint64_t)chunk->getChunkCoordZ() & 0xFFFFFFFF) << 32;
+
+                            this->savedChunkModifications.emplace(chunkXBits | chunkZBits, chunkMods);;
+                        }
+                    }
 
                     if(xOff >= -this->curRenderDistance - deltaX) {
                         this->loadedChunks[curChunkIndex] = this->loadedChunks[offsetChunkIndex];
@@ -97,6 +121,18 @@ namespace World::Chunks {
                     int curChunkIndex = this->getChunkVectorIndex(xOff, zOff, this->curRenderDistance);
                     int offsetChunkIndex = this->getChunkVectorIndex(xOff, zOff + deltaZ, this->curRenderDistance);
 
+                    if(zOff < -this->curRenderDistance + deltaZ) {
+                        const auto& chunk = this->loadedChunks[curChunkIndex];
+                        const auto chunkMods = chunk->getChunkModifications();
+
+                        if(!chunkMods.empty()) {
+                            uint64_t chunkXBits = (uint64_t)chunk->getChunkCoordX() & 0xFFFFFFFF;
+                            uint64_t chunkZBits = ((uint64_t)chunk->getChunkCoordZ() & 0xFFFFFFFF) << 32;
+
+                            this->savedChunkModifications.emplace(chunkXBits | chunkZBits, chunkMods);;
+                        }
+                    }
+
                     if(zOff <= this->curRenderDistance - deltaZ) {
                         this->loadedChunks[curChunkIndex] = this->loadedChunks[offsetChunkIndex];
 
@@ -115,6 +151,18 @@ namespace World::Chunks {
                 for(int xOff = -this->curRenderDistance; xOff <= this->curRenderDistance; xOff++) {
                     int curChunkIndex = this->getChunkVectorIndex(xOff, zOff, this->curRenderDistance);
                     int offsetChunkIndex = this->getChunkVectorIndex(xOff, zOff + deltaZ, this->curRenderDistance);
+
+                    if(zOff > this->curRenderDistance + deltaZ) {
+                        const auto& chunk = this->loadedChunks[curChunkIndex];
+                        const auto chunkMods = chunk->getChunkModifications();
+
+                        if(!chunkMods.empty()) {
+                            uint64_t chunkXBits = (uint64_t)chunk->getChunkCoordX() & 0xFFFFFFFF;
+                            uint64_t chunkZBits = ((uint64_t)chunk->getChunkCoordZ() & 0xFFFFFFFF) << 32;
+
+                            this->savedChunkModifications.emplace(chunkXBits | chunkZBits, chunkMods);;
+                        }
+                    }
 
                     if(zOff >= -this->curRenderDistance - deltaZ) {
                         this->loadedChunks[curChunkIndex] = this->loadedChunks[offsetChunkIndex];
@@ -217,7 +265,7 @@ namespace World::Chunks {
 
         int chunkIndex = this->getChunkVectorIndex(deltaX, deltaZ, this->curRenderDistance);
 
-        this->loadedChunks[chunkIndex]->setBlock(blockX, y, blockZ, block);
+        this->loadedChunks[chunkIndex]->setBlock(blockX, y, blockZ, block, false);
     }
 
     void ChunkManager::render(GL::GLFWContext& context, GL::ShaderProgram& shader, const BlockAtlas& blockAtlas, const glm::mat4& viewProjMat) {
@@ -274,6 +322,19 @@ namespace World::Chunks {
                     chunkPtr->setBlock(i, k, j, *block);
                 }
             }
+        }
+
+        uint64_t chunkXBits = (uint64_t)chunkX & 0xFFFFFFFF;
+        uint64_t chunkZBits = ((uint64_t)chunkZ & 0xFFFFFFFF) << 32;
+
+        if(this->savedChunkModifications.find(chunkXBits | chunkZBits) != this->savedChunkModifications.end()) {
+            const auto& chunkMods = this->savedChunkModifications[chunkXBits | chunkZBits];
+
+            for(const auto& chunkMod : chunkMods) {
+                chunkPtr->setBlock(chunkMod.blockPos, chunkMod.block, false);
+            }
+
+            this->savedChunkModifications.erase(chunkXBits | chunkZBits);
         }
 
         return chunkPtr;

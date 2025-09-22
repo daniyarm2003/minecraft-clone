@@ -5,6 +5,8 @@
 #include "block_atlas.h"
 #include "../../opengl/shader.h"
 
+#include <unordered_map>
+
 namespace World::Chunks {
     class ChunkManager {
     public:
@@ -33,6 +35,7 @@ namespace World::Chunks {
         int curRenderDistance = 0;
 
         std::vector<std::shared_ptr<Chunk>> loadedChunks;
+        std::unordered_map<uint64_t, std::vector<ChunkModification>> savedChunkModifications;
 
         int getChunkVectorIndex(int chunkOffsetX, int chunkOffsetZ, int renderDistance) const;
 

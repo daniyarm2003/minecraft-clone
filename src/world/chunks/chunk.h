@@ -3,6 +3,7 @@
 
 #include <array>
 #include <glm/glm.hpp>
+#include <unordered_set>
 
 #include "block.h"
 #include "block_atlas.h"
@@ -10,6 +11,11 @@
 
 namespace World::Chunks {
     class ChunkManager;
+
+    struct ChunkModification {
+        glm::ivec3 blockPos;
+        Block block;
+    };
 
     class Chunk {
     public:
@@ -25,13 +31,15 @@ namespace World::Chunks {
         const Block& getBlock(const glm::ivec3& blockPos) const;
         const Block& getBlock(int x, int y, int z) const;
 
-        void setBlock(const glm::ivec3& blockPos, const Block& block);
-        void setBlock(int x, int y, int z, const Block& block);
+        void setBlock(const glm::ivec3& blockPos, const Block& block, bool naturalGeneration = true);
+        void setBlock(int x, int y, int z, const Block& block, bool naturalGeneration = true);
 
         int getChunkCoordX() const;
         int getChunkCoordZ() const;
 
         void meshMarkDirty();
+
+        std::vector<ChunkModification> getChunkModifications() const;
 
         void render(GL::GLFWContext& context, GL::ShaderProgram& shader, const BlockAtlas& blockAtlas);
 
@@ -39,6 +47,7 @@ namespace World::Chunks {
         int chunkCoordX, chunkCoordZ;
 
         std::array<Block, CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z> blocks;
+        std::unordered_set<int> modifiedBlockCoords;
 
         ChunkMesh mesh;
         ChunkManager* chunkManager;
