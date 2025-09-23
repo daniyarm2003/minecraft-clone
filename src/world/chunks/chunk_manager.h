@@ -21,9 +21,13 @@ namespace World::Chunks {
         bool isChunkLoaded(int chunkX, int chunkZ) const;
         std::weak_ptr<Chunk> getChunk(int chunkX, int chunkZ);
 
+        bool isPosLoaded(const glm::vec3& pos) const;
         bool isBlockPosLoaded(const glm::ivec3& blockPos) const;
         bool isBlockPosLoaded(int x, int y, int z) const;
 
+        glm::ivec3 getBlockPosFromPos(const glm::vec3& pos) const;
+
+        const Block& getBlock(const glm::vec3& pos) const;
         const Block& getBlock(const glm::ivec3& blockPos) const;
         const Block& getBlock(int x, int y, int z) const;
 

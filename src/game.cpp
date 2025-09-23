@@ -110,17 +110,19 @@ void Game::update() {
 
     this->chunkManager.loadChunks(camPos);
 
-    if(this->inputManager.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-        glm::vec3 camBlockPos = glm::floor(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT);
-        glm::ivec3 placeBlockPos = glm::floor(camBlockPos + 0.5f + 3.0f * camForward);
+    if(this->inputManager.getMouseButtonPressState(GLFW_MOUSE_BUTTON_RIGHT) == Input::ButtonPressState::PRESSED) {
+        auto raycastHitResult = this->raycaster.raycast(this->chunkManager, camPos, camForward);
 
-        this->chunkManager.setBlock(placeBlockPos, World::Chunks::Blocks::STONE);
+        if(raycastHitResult) {
+            this->chunkManager.setBlock(raycastHitResult.getPreviousBlockPosition(), World::Chunks::Blocks::STONE);
+        }
     }
-    else if(this->inputManager.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-        glm::vec3 camBlockPos = glm::floor(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT);
-        glm::ivec3 placeBlockPos = glm::floor(camBlockPos + 0.5f + 3.0f * camForward);
+    else if(this->inputManager.getMouseButtonPressState(GLFW_MOUSE_BUTTON_LEFT) == Input::ButtonPressState::PRESSED) {
+        auto raycastHitResult = this->raycaster.raycast(this->chunkManager, camPos, camForward);
 
-        this->chunkManager.setBlock(placeBlockPos, World::Chunks::Blocks::AIR);
+        if(raycastHitResult) {
+            this->chunkManager.setBlock(raycastHitResult.getBlockPosition(), World::Chunks::Blocks::AIR);
+        }
     }
 
     this->inputManager.resetMouseDelta();

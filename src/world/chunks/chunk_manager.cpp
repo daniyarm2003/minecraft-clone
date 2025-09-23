@@ -208,6 +208,11 @@ namespace World::Chunks {
         return std::weak_ptr<Chunk>(this->loadedChunks[chunkIndex]);
     }
 
+    bool ChunkManager::isPosLoaded(const glm::vec3& pos) const {
+        glm::ivec3 blockPos = this->getBlockPosFromPos(pos);
+        return this->isBlockPosLoaded(blockPos);
+    }
+
     bool ChunkManager::isBlockPosLoaded(const glm::ivec3& blockPos) const {
         return this->isBlockPosLoaded(blockPos.x, blockPos.y, blockPos.z);
     }
@@ -220,6 +225,15 @@ namespace World::Chunks {
         int chunkZ = z / Chunk::CHUNK_SIZE_Z - (negativeChunkOffsetZ ? 1 : 0);
 
         return this->isChunkLoaded(chunkX, chunkZ) && y >= 0 && y < Chunk::CHUNK_SIZE_Y;
+    }
+
+    glm::ivec3 ChunkManager::getBlockPosFromPos(const glm::vec3& pos) const {
+        return glm::floor(pos / Chunk::BLOCK_SIZE_FLOAT);
+    }
+
+    const Block& ChunkManager::getBlock(const glm::vec3& pos) const {
+        glm::ivec3 blockPos = this->getBlockPosFromPos(pos);
+        return this->getBlock(blockPos);
     }
 
     const Block& ChunkManager::getBlock(const glm::ivec3& blockPos) const {

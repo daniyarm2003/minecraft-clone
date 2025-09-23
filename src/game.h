@@ -17,6 +17,8 @@
 #include "world/chunks/chunk.h"
 #include "world/chunks/chunk_manager.h"
 
+#include "world/raycaster.h"
+
 class Game {
 public:
     static constexpr int DEFAULT_SCREEN_WIDTH = 800;
@@ -50,6 +52,8 @@ private:
     float storedPitch = 0.0f, storedYaw = 0.0f;
 
     Utils::GameTimeTracker timeTracker;
+
+    World::Raycaster raycaster;
 
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
