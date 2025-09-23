@@ -107,7 +107,7 @@ void Game::update() {
 
     this->camera.setPosition(camPos);
     this->camera.setRotation(camRot);
-
+    
     this->chunkManager.loadChunks(camPos);
 
     if(this->inputManager.isKeyPressed(GLFW_KEY_F)) {

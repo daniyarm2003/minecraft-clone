@@ -115,6 +115,8 @@ namespace World::Chunks {
             }
         }
 
+        this->centerChunkX = chunkX;
+
         if(deltaZ > 0) {
             for(int zOff = -this->curRenderDistance; zOff <= this->curRenderDistance; zOff++) {
                 for(int xOff = -this->curRenderDistance; xOff <= this->curRenderDistance; xOff++) {
@@ -178,7 +180,6 @@ namespace World::Chunks {
             }
         }
 
-        this->centerChunkX = chunkX;
         this->centerChunkZ = chunkZ;
     }
 
