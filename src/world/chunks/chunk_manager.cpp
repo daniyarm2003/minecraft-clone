@@ -41,11 +41,16 @@ namespace World::Chunks {
         this->curRenderDistance = renderDistance;
     }
 
-    void ChunkManager::loadChunks(const glm::vec3& pos) {
+    glm::ivec2 ChunkManager::getChunkCoordsFromWorldPos(const glm::vec3& pos) const {
         int chunkX = (int)glm::round(pos.x / (Chunk::BLOCK_SIZE_FLOAT * (float)Chunk::CHUNK_SIZE_X));
         int chunkZ = (int)glm::round(pos.z / (Chunk::BLOCK_SIZE_FLOAT * (float)Chunk::CHUNK_SIZE_Z));
 
-        this->loadChunks(chunkX, chunkZ);
+        return { chunkX, chunkZ };
+    }
+
+    void ChunkManager::loadChunks(const glm::vec3& pos) {
+        glm::ivec2 chunkCoords = this->getChunkCoordsFromWorldPos(pos);
+        this->loadChunks(chunkCoords.x, chunkCoords.y);
     }
 
     void ChunkManager::loadChunks(int chunkX, int chunkZ) {

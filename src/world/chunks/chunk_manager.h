@@ -16,6 +16,8 @@ namespace World::Chunks {
         void loadChunks(int centerChunkX, int centerChunkZ);
         void loadChunks(const glm::vec3& pos);
 
+        glm::ivec2 getChunkCoordsFromWorldPos(const glm::vec3& pos) const;
+
         bool isChunkLoaded(int chunkX, int chunkZ) const;
         std::weak_ptr<Chunk> getChunk(int chunkX, int chunkZ);
 
