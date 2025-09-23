@@ -12,7 +12,7 @@ C_FILES := $(foreach dir,$(SRC_SUBDIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES_CPP := $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(CPP_FILES))
 OBJ_FILES_C := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(C_FILES))
 
-CPP_FLAGS ?= -Iinclude -Wall -O2 -MMD -pg
+CPP_FLAGS ?= -Iinclude -Wall -O2 -MMD -pg -std=c++17
 C_FLAGS ?= -Iinclude -Wall -O2 -MMD -pg
 
 LDFLAGS ?= -lm -lglfw -lGL -lX11 -lpthread -lXrandr -lXi -ldl -pg
