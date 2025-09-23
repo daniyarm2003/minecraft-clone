@@ -50,7 +50,7 @@ void Game::update() {
     this->timeTracker.update(this->context.getTime());
 
     this->context.pollEvents();
-    this->inputManager.updateKeyStates();
+    this->inputManager.updateButtonStates();
 
     auto camPos = this->camera.getPosition();
     auto camRot = this->camera.getRotation();
@@ -107,14 +107,20 @@ void Game::update() {
 
     this->camera.setPosition(camPos);
     this->camera.setRotation(camRot);
-    
+
     this->chunkManager.loadChunks(camPos);
 
-    if(this->inputManager.isKeyPressed(GLFW_KEY_F)) {
+    if(this->inputManager.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
         glm::vec3 camBlockPos = glm::floor(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT);
         glm::ivec3 placeBlockPos = glm::floor(camBlockPos + 0.5f + 3.0f * camForward);
 
         this->chunkManager.setBlock(placeBlockPos, World::Chunks::Blocks::STONE);
+    }
+    else if(this->inputManager.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        glm::vec3 camBlockPos = glm::floor(camPos / World::Chunks::Chunk::BLOCK_SIZE_FLOAT);
+        glm::ivec3 placeBlockPos = glm::floor(camBlockPos + 0.5f + 3.0f * camForward);
+
+        this->chunkManager.setBlock(placeBlockPos, World::Chunks::Blocks::AIR);
     }
 
     this->inputManager.resetMouseDelta();
@@ -158,4 +164,11 @@ void Game::mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 void Game::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     Game& game = Game::getInstance();
     game.context.setCursorMode(GLFW_CURSOR_DISABLED);
+
+    if(action == GLFW_PRESS) {
+        game.inputManager.onMouseButtonPress(button);
+    }
+    else if(action == GLFW_RELEASE) {
+        game.inputManager.onMouseButtonRelease(button);
+    }
 }
