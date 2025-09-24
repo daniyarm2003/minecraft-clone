@@ -115,6 +115,23 @@ namespace GL {
         this->setDepthTest(mode);
     }
 
+    void GLFWContext::enableBlending() {
+        glEnable(GL_BLEND);
+    }
+
+    void GLFWContext::disableBlending() {
+        glDisable(GL_BLEND);
+    }
+
+    void GLFWContext::setBlendFunc(GLenum srcFunc, GLenum destFunc) {
+        glBlendFunc(srcFunc, destFunc);
+    }
+
+    void GLFWContext::setBlendOperation(GLenum blendOp) {
+        glBlendEquation(blendOp);
+    }
+
+
     void GLFWContext::setCursorMode(int value) {
         glfwSetInputMode(this->window, GLFW_CURSOR, value);
     }

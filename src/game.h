@@ -18,6 +18,7 @@
 #include "world/chunks/chunk_manager.h"
 
 #include "world/raycaster.h"
+#include "screens/hud.h"
 
 class Game {
 public:
@@ -54,6 +55,8 @@ private:
     Utils::GameTimeTracker timeTracker;
 
     World::Raycaster raycaster;
+
+    Screens::HUD hud;
 
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;

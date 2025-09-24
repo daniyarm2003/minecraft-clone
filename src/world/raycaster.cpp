@@ -41,7 +41,7 @@ namespace World {
             }
 
             prevPos = curPos;
-            curPos += 0.5f * Chunks::Chunk::BLOCK_SIZE_FLOAT * rayDirection;
+            curPos += 0.05f * Chunks::Chunk::BLOCK_SIZE_FLOAT * rayDirection;
         }
 
         return RaycastHit(rayStart, rayDirection);

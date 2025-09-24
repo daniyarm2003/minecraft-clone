@@ -24,14 +24,11 @@ Game::Game()
         }
 
         this->blockAtlas.loadTextureDataFromFile("assets/textures/blockatlas.png");
-
-        this->context.enableAndSetDepthTest(GL_LESS);
-        this->context.enableFaceCulling();
-        this->context.setCullFrontFace(GL_CW);
-
         this->chunkManager.setRenderDistance(7);
 
         this->camera.setPosition(glm::vec3(0.0f, World::Chunks::Chunk::BLOCK_SIZE_FLOAT * 32.0f, 0.0f));
+
+        this->hud.loadResources();
     }
 
 GL::GLFWContext& Game::getGLFWContext() {
@@ -132,9 +129,18 @@ void Game::draw() {
     this->context.setClearColor(0.1f, 0.75f, 1.0f, 1.0f);
     this->context.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    this->context.enableAndSetDepthTest(GL_LESS);
+    this->context.enableFaceCulling();
+    this->context.setCullFrontFace(GL_CW);
+
     glm::mat4 cameraTransform = this->camera.getViewProjectionMatrix(this->context.getAspectRatio(), 0.1f, 1000.0f);
 
     this->chunkManager.render(this->context, this->testShaderProgram, this->blockAtlas, cameraTransform);
+
+    this->context.disableFaceCulling();
+    this->context.disableDepthTest();
+
+    this->hud.render(this->context);
 
     this->context.swapBuffers();
 }

@@ -40,6 +40,11 @@ namespace GL {
         void setDepthTest(GLenum mode);
         void enableAndSetDepthTest(GLenum mode);
 
+        void enableBlending();
+        void disableBlending();
+        void setBlendFunc(GLenum srcFunc, GLenum destFunc);
+        void setBlendOperation(GLenum blendOp);
+
         void setCursorMode(int value);
 
         void enableFaceCulling();
