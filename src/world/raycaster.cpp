@@ -1,4 +1,5 @@
 #include "raycaster.h"
+#include <glm/gtx/norm.hpp>
 
 namespace World {
     RaycastHit::RaycastHit(const glm::vec3& rayStart, const glm::vec3& rayDirection) 
@@ -27,11 +28,13 @@ namespace World {
         return this->prevBlockPos;
     }
 
-    const RaycastHit Raycaster::raycast(const Chunks::ChunkManager& chunkManager, const glm::vec3& rayStart, const glm::vec3& rayDirection) const {
+    const RaycastHit Raycaster::raycast(const Chunks::ChunkManager& chunkManager, const glm::vec3& rayStart, const glm::vec3& rayDirection, float distLimit) const {
         glm::vec3 prevPos = rayStart;
         glm::vec3 curPos = rayStart;
 
-        while(chunkManager.isPosLoaded(curPos)) {
+        float scaledDistLimit = distLimit * Chunks::Chunk::BLOCK_SIZE_FLOAT;
+
+        while(chunkManager.isPosLoaded(curPos) && glm::length2(curPos - rayStart) <= scaledDistLimit * scaledDistLimit) {
             glm::ivec3 curBlockPos = chunkManager.getBlockPosFromPos(curPos);
 
             if(chunkManager.getBlock(curBlockPos).isSolid()) {

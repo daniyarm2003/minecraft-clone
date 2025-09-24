@@ -30,7 +30,7 @@ namespace World {
 
     class Raycaster {
     public:
-        const RaycastHit raycast(const Chunks::ChunkManager& chunkManager, const glm::vec3& rayStart, const glm::vec3& rayDirection) const;
+        const RaycastHit raycast(const Chunks::ChunkManager& chunkManager, const glm::vec3& rayStart, const glm::vec3& rayDirection, float distLimit = INFINITY) const;
     };
 }
 
