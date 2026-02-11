@@ -9,7 +9,7 @@ Ensure you have C++ build tools, GLFW, and glm installed. On Ubuntu or Debian-ba
 
 ```bash
 sudo apt update
-sudo apt install build-essential libglfw3-dev libglm-dev
+sudo apt install build-essential libglfw3-dev libglm-dev libxi-dev
 ```
 
 To build the project, use:
